@@ -1,5 +1,5 @@
 import getopt, sys, os, shutil, uuid
-from modules import routines, reconstruction
+from modules import routines, reconstruction, visualization
 
 def params():
     try:
@@ -28,9 +28,9 @@ def main():
         routines.visualization()
 
     elif t == '1':
-        print("Sim!")
+        visualization.plot_lcurve_iter('2d')
     elif t == '2':
-        reconstruction.simple_recon()
+        reconstruction.reconstruction()
 
     elif t == '3':
         print("Full!")

@@ -1,5 +1,20 @@
-import os, sys, subprocess, time
+import os, sys, time
 import numpy as np
+from subprocess import Popen, PIPE, CalledProcessError
+
+def reconstruction():
+    print("Options for Reconstruction: ")
+    print("    1. Test co65")
+    print("    2. Test HLTau")
+    print("    3. Other")
+    r = input("option: ")
+
+    if r == '1':
+        test_co65()
+    elif r == '2':
+        test_hltau()
+    else:
+        sys.exit("Option not implemented yet.")
 
 
 def create_directory(directory = ""):
@@ -39,7 +54,7 @@ def start(n=0, directory="", lambda_min=0, lambda_max=0, step=0):
                 i_real = command['i'] + str(count) + '.ms'
                 O_real = command['O'] + str(count) + '_' + str(i) + '.fits'
 
-                process = subprocess.Popen([
+                process = Popen([
                     command['recon_path'],
                     '-X', command['x'],
                     '-Y', command['y'],
@@ -55,7 +70,7 @@ def start(n=0, directory="", lambda_min=0, lambda_max=0, step=0):
                     '-z', command['z'],
                     '-Z', str(lambda_values[i]),
                     '--verbose'
-                ], stdout=subprocess.PIPE)
+                ], stdout=PIPE)
                 output, error = process.communicate()
             bar.next()
 
@@ -65,12 +80,11 @@ def start(n=0, directory="", lambda_min=0, lambda_max=0, step=0):
     print("\nReconstruction time: ", total_time, " (min)")
 
 
-def simple_recon():
+def test_co65():
     start = time.time()
-    print("Start simple recon")
 
     command = {
-        'gpuvmem': '~/workspace/Github/gpuvmem/bin/gpuvmem',
+        'gpuvmem': '/home/hperez/Desktop/gpuvmem/bin/gpuvmem',
         'x': '16',
         'y': '16',
         'v': '256',
@@ -79,14 +93,14 @@ def simple_recon():
         'p': '../test/mem/',
         't': '5000000',
         'z': '0.001',
-        'Z': '0.05',
-        'm': '../data/mod_in_0.fits',
+        'Z': '0.05,0.0',
+        'm': '../data/model_images/mod_in_0.fits',
         'i': '../data/co65.ms',
         'O': '../test/final_out.fits',
         'values': '../test/values.txt'
     }
 
-    process = subprocess.Popen([
+    with Popen([
         command['gpuvmem'],
         '-X', command['x'],
         '-Y', command['y'],
@@ -102,8 +116,59 @@ def simple_recon():
         '-z', command['z'],
         '-Z', command['Z'],
         '--verbose'
-    ], stdout=subprocess.PIPE)
-    output, error = process.communicate()
+    ], stdout=PIPE, universal_newlines=True) as p:
+        for line in p.stdout:
+            print(line,  end='')
+
+    if p.returncode != 0:
+        raise CalledProcessError(p.returncode, p.args)
+
+    stop = time.time()
+    total_time = (stop - start) / 60
+    print("\nReconstruction time: ", total_time, " (min)")
+
+def test_hltau():
+    start = time.time()
+
+    command = {
+        'gpuvmem': '/home/hperez/Desktop/gpuvmem/bin/gpuvmem',
+        'x': '16',
+        'y': '16',
+        'v': '256',
+        'I': '../data/input.dat',
+        'o': '../test/residuals.ms',
+        'p': '../test/mem/',
+        't': '5000000',
+        'z': '0.001',
+        'Z': '0.05,0.0',
+        'm': '../data/model_images/hltau5_whead.fits',
+        'i': '../data/hltau_reducido.ms',
+        'O': '../test/final_out.fits',
+        'values': '../test/values.txt'
+    }
+
+    with Popen([
+        command['gpuvmem'],
+        '-X', command['x'],
+        '-Y', command['y'],
+        '-V', command['v'],
+        '-i', command['i'],
+        '-I', command['I'],
+        '-o', command['o'],
+        '-O', command['O'],
+        '-m', command['m'],
+        '-t', command['t'],
+        '-p', command['p'],
+        '-f', command['values'],
+        '-z', command['z'],
+        '-Z', command['Z'],
+        '--verbose'
+    ], stdout=PIPE, universal_newlines=True) as p:
+        for line in p.stdout:
+            print(line, end='')
+
+    if p.returncode != 0:
+        raise CalledProcessError(p.returncode, p.args)
 
     stop = time.time()
     total_time = (stop - start) / 60
