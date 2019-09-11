@@ -2,11 +2,12 @@ import os, sys, time
 import numpy as np
 from subprocess import Popen, PIPE, CalledProcessError
 
-def reconstruction():
+def start():
     print("Options for Reconstruction: ")
-    print("    1. Test co65")
-    print("    2. Test HLTau")
-    print("    3. Other")
+    print("    (1) Test co65")
+    print("    (2) Test HLTau")
+    print("    (3) iFFT")
+    print("    (4) Other")
     r = input("option: ")
 
     if r == '1':

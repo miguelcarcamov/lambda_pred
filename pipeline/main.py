@@ -1,5 +1,5 @@
 import getopt, sys, os, shutil, uuid
-from modules import routines, reconstruction, visualization
+from modules import simulation, reconstruction, visualization, routines
 
 def params():
     try:
@@ -10,7 +10,7 @@ def params():
 
     # Tipo de pipeline a seguir
     # t = 0 (default, visualization only); t = 1 (simulation only); t = 2 (reconstruction only); t = 3 (full)
-    t = '   0'
+    t = '0'
     for opt, value in opts:
         if opt in ("-t", "--type"):
             t = value
@@ -25,15 +25,13 @@ def main():
     t = params()
 
     if t == '0':
-        routines.visualization()
-
+        visualization.start()
     elif t == '1':
-        visualization.plot_lcurve_iter('2d')
+        simulation.start()
     elif t == '2':
-        reconstruction.reconstruction()
-
+        reconstruction.start()
     elif t == '3':
-        print("Full!")
+        routines.extract_values_from_fits()
     else:
         sys.exit("Option in -t not valid.")
 

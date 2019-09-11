@@ -2,6 +2,32 @@ import matplotlib.pyplot as plt
 import csv, sys
 from mpl_toolkits.mplot3d import axes3d
 
+def start():
+    print("Options for Visualization: ")
+    print("    (1) UV Plane")
+    print("    (2) L-Curve")
+    print("    (3) L-Curve Iterations")
+    print("    (4) Exit")
+
+    while True:
+        r = input("option: ")
+
+        if r == '1':
+            test()
+        elif r == '2':
+            test()
+        elif r == '3':
+            plot_lcurve_iter()
+        elif r == '4':
+            break;
+        else:
+            print("Not a valid option, choose another one.")
+
+    sys.exit("Exit...")
+
+def test():
+    print("testing")
+
 def plot_lcurve(data_path=""):
     y_chi = []
     x_entropy = []
@@ -26,7 +52,7 @@ def plot_lcurve(data_path=""):
     ax.plot(x_entropy, y_chi, 'ro-')
     plt.show()
 
-def plot_lcurve_iter(dim=""):
+def plot_lcurve_iter(dim="2d"):
     iter = []
     y_chi = []
     x_entropy = []
