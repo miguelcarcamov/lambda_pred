@@ -5,9 +5,10 @@ from mpl_toolkits.mplot3d import axes3d
 def start():
     print("Options for Visualization: ")
     print("    (1) UV Plane")
-    print("    (2) L-Curve")
-    print("    (3) L-Curve Iterations")
-    print("    (4) Exit")
+    print("    (2) UV Plane Gridded")
+    print("    (3) L-Curve")
+    print("    (4) L-Curve Iterations")
+    print("    (5) Exit")
 
     while True:
         r = input("option: ")
@@ -15,11 +16,13 @@ def start():
         if r == '1':
             test()
         elif r == '2':
-            test()
+            plot_uv_plane_gridded()
         elif r == '3':
             plot_lcurve_iter()
         elif r == '4':
-            break;
+            test()
+        elif r == '4':
+            test()
         else:
             print("Not a valid option, choose another one.")
 
@@ -96,3 +99,32 @@ def plot_lcurve_iter(dim="2d"):
         plt.show()
     else:
         sys.exit("Dimension must be '2d' or '3d'.")
+
+def plot_uv_plane_gridded(path=""):
+    path = "/home/hperez/Desktop/gridded_uv_full.csv"
+
+    x_u = []
+    y_v = []
+    z_vo_real = []
+    z_vo_imag = []
+
+    with open(path) as f:
+        reader = csv.reader(f)
+        next(reader)
+        data = [r for r in reader]
+
+    for i in range(len(data)):
+        row_data = data[i]
+        if (len(row_data) == 5):
+            x_u.append(float(row_data[0]))
+            y_v.append(float(row_data[1]))
+            z_vo_imag.append(float(row_data[2]))
+            z_vo_imag.append(float(row_data[3]))
+    
+    fig = plt.figure(figsize=plt.figaspect(1))
+    fig.suptitle("Gridded Fourier Plane", fontsize=14, fontweight='bold')
+    ax = fig.add_subplot(111)
+    ax.set_xlabel('u')
+    ax.set_ylabel('v')
+    ax.scatter(x_u, y_v)
+    plt.show()

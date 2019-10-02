@@ -31,7 +31,7 @@ def main():
     elif t == '2':
         reconstruction.start()
     elif t == '3':
-        routines.extract_values_from_fits()
+        routines.apply_ifft2d()
     else:
         sys.exit("Option in -t not valid.")
 
