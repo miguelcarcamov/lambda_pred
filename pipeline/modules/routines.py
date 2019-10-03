@@ -109,9 +109,9 @@ def apply_ifft2d():
     uvgrid = np.zeros((N, M)) + 1j*np.zeros((N, M))
 
     for i in range(len(data)):
-        u_pixel = int(np.floor(0.5 + float(data[i][0])/deltau) + N/2)
-        v_pixel = int(np.floor(0.5 + float(data[i][1])/deltav) + M/2)
-        uvgrid[v_pixel, u_pixel] += float(data[i][2]) + 1j*float(data[i][3])
+        u_pixel = int(np.floor(data[i][0]/deltau) + N/2)
+        v_pixel = int(np.floor(data[i][1]/deltav) + M/2)
+        uvgrid[v_pixel, u_pixel] = data[i][2] + 1j*data[i][3]
 
     fig = plt.figure()
     ax1 = fig.add_subplot(121)
